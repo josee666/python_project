@@ -1,0 +1,24 @@
+
+test1
+en debug - gdal reseau - donnee reseau: 
+681 minutes -> 11,35 heures
+
+test2
+gdal Reseau, donnée local (E) - run python3.9
+675.18
+
+test3
+gdal local - donnée local(C) - run python 3.9
+temps execution de la fonction: mergeShp = 318.85
+
+test4
+gdal local - donnée local(E) - run
+442.72
+
+
+test5
+ogrMerge.py ** ordi perso (GDAL 3.4.1)
+9 minutes
+"c:/program files/gdal/ogrmerge.py" -single -o merged.shp "resultat\*.shp"
+
+
