@@ -7,21 +7,30 @@ import pathlib
 from tabulate import tabulate
 
 
-
-
-
 class ServiceRechercheFichier():
+    """ 2022-09 JM
+    Classe qui sert a chercher du text dans des fichiers.
+    PARAM:
+        dosDepart(str): donne le path ou l'outil debute la recherche
+        listExtensionFichier(list): une liste des extension de fichier. Exemple ['.py', '.txt'] -. recherchera les expression dans tous le sfichier .py ET .txt
+        listExpressionATrouver(list): une liste expression qu'on cherche. Exemple 'createTable(', 'droptable']
+        dosSortie(str): path dossier ou le fichier de sortie sera deposé
 
-    def __init__(self, dosDepart, listExtensionFichier, listExpressionATrouve ):
+    Exemple je recherche 'maSuperFonction' dans tout les fichiers aiyant extension .py
+        objServiceRecherche = ServiceRechercheFichier(dosDepart="D:\\", listExtensionFichier=['.py'], listExpressionATrouve=['createTable('])
+        objServiceRecherche.search()
+
+    """
+
+    def __init__(self, dosDepart, listExtensionFichier, listExpressionATrouver, dosSortie ):
         self.extensions = listExtensionFichier
         self.dosDepart = os.path.normpath(dosDepart)
-        self.listExpATrouve = listExpressionATrouve
+        self.listExpATrouve = listExpressionATrouver
 
         self.listFileARegarder = []
         self.dictFileTrouve = {} ## nomfile : [path, listNoLigneTrouve]
-        # self.dictTrouve = {} ## expression : [path, listNoLigneTrouve]
-        # self.listExpFileTrouve = []
         self.filesProblemeLecture = []
+        self.dosSortie = os.path.normpath(dosSortie)
 
         # self.testdictfile = {
         #                 'filex':{
@@ -63,8 +72,6 @@ class ServiceRechercheFichier():
 
 
     def openAllAndSearch(self):
-        # fileProblemeLecture = []
-        # listFileCantOpen = []
         openFile = ''
 
         for file in self.listFileARegarder:
@@ -82,8 +89,6 @@ class ServiceRechercheFichier():
                     for exp in self.listExpATrouve:
                         if exp in line:
                             # print('Trouvé', exp, file)
-
-                            # keyNameFile = file.replace('\\', '_')
                             keyNameFile = file.replace('\\', '/')
 
                             # check si dict file exist et si dict exp existe
@@ -113,7 +118,7 @@ class ServiceRechercheFichier():
 
 
     def exportResultHtml(self):
-        # print('check; from tabulate import tabulate package')
+
         style = """<style>
                 h2{color:red}
                 th, td {
@@ -138,12 +143,6 @@ class ServiceRechercheFichier():
             """
 
         titreCol = ['Fichier', 'Expression trouvée', 'no Ligne']
-        # listImprim = ['fichieX', 'exp1', '1,2,3,4']
-        # listImprim2 = ['fichieX', 'exp2', '5,6']
-        # listImprim3 = ['fichieZ', 'exp1', '100, 1223']
-        #
-        # tab = [titreCol, listImprim, listImprim2, listImprim3 ]
-        # print(tabulate(tab, tablefmt='html'))
 
         listTot = []
         listTot.append(titreCol)
@@ -157,21 +156,20 @@ class ServiceRechercheFichier():
 
         titreDoc = "Résultat recherche de fichier"
 
-        html_file = open('exportResult.html', 'w')
+        html_file = open('{}\\exportResult.html'.format(self.dosSortie), 'w')
         html_file.write(style)
         html_file.write("<h2>{}</h2>".format(titreDoc))
         html_file.write(tabHtml)
-        # html_file.write(tes)
         html_file.close()
 
 
     def printFileProbleme(self):
         if len(self.filesProblemeLecture) > 0:
             print('les files incapables lire: ' )
-            fileProb = open('fichiersProblemeLecture', 'w')
+            fileProb = open('{}\\fichiersProblemeLecture.txt'.format(self.dosSortie), 'w')
             for i in self.filesProblemeLecture:
-                print(i)
                 fileProb.write(i[0])
+                fileProb.write('\n')
             fileProb.close()
 
 
@@ -180,14 +178,13 @@ class ServiceRechercheFichier():
 
 if __name__ == '__main__':
 
-    # pathDep = "G:\OutilsProdDIF\modules_communs\python27"
+    pathDep = "G:\OutilsProdDIF\modules_communs\python27"
     # pathDep = "D:\python\gitProjet\donneeTests\ServRecherche"
     # pathDep = "D:/Python\projetGit/donneeTest/recherche_py"
     # servSearch = ServiceRechercheFichier(pathDep, ['.py'], [ 'getNullouBlanc' ])
 
-    pathDep = "D:\\"
+    # pathDep = "D:\\"
     # pathDep = "D:\FOX_prog"
-    servSearch = ServiceRechercheFichier(pathDep, ['.py'], ['createTable('])
-
+    servSearch = ServiceRechercheFichier(dosDepart=pathDep, listExtensionFichier=['.py'], listExpressionATrouver=['createTable('], dosSortie='D:/a_temp' )
     servSearch.search()
     print('ici')
