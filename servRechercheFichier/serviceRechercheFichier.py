@@ -83,7 +83,8 @@ class ServiceRechercheFichier():
                         if exp in line:
                             # print('Trouvé', exp, file)
 
-                            keyNameFile = file.replace('\\', '_')
+                            # keyNameFile = file.replace('\\', '_')
+                            keyNameFile = file.replace('\\', '/')
 
                             # check si dict file exist et si dict exp existe
                             if keyNameFile not in list(self.dictFileTrouve.keys()):
@@ -167,46 +168,26 @@ class ServiceRechercheFichier():
     def printFileProbleme(self):
         if len(self.filesProblemeLecture) > 0:
             print('les files incapables lire: ' )
+            fileProb = open('fichiersProblemeLecture', 'w')
             for i in self.filesProblemeLecture:
                 print(i)
+                fileProb.write(i[0])
+            fileProb.close()
 
-# for file in self.listFileARegarder:
-#     compteurLigne = 0
-#     keyFileInDict = file in self.dictFileTrouve
-#     try:
-#         openFile = open(file, encoding='utf8')
-#     except Exception as e:
-#         print("ce fihcier ne s'ouvre pas avec open... a faire plus tard")
-#         listFileCantOpen.append(file)
-#
-#     for line in openFile:
-#         compteurLigne += 1
-#
-#         for exp in self.listExpATrouve:
-#             if exp in line:
-#                 print('Trouvé', exp, file)
-#                 # check si dict file exist et si dict exp existe
-#                 if not keyFileInDict:
-#                     self.dictFileTrouve[file]= {}
-#                 # check si dict Exp exist
-#                 if not exp in self.dictFileTrouve[file].values():
-#                     print('existe pas')
-#                     self.dictFileTrouve[file] = {exp : [compteurLigne]}
-#                 else:
-#                     print('ici')
-#
+
 
 
 
 if __name__ == '__main__':
 
-    pathDep = "D:\python\gitProjet\donneeTests\ServRecherche"
+    # pathDep = "G:\OutilsProdDIF\modules_communs\python27"
+    # pathDep = "D:\python\gitProjet\donneeTests\ServRecherche"
     # pathDep = "D:/Python\projetGit/donneeTest/recherche_py"
-    servSearch = ServiceRechercheFichier(pathDep, ['.py', '.txt'], [ 'bla bla' ])
+    # servSearch = ServiceRechercheFichier(pathDep, ['.py'], [ 'getNullouBlanc' ])
 
-    # pathDep = "D:\\"
+    pathDep = "D:\\"
     # pathDep = "D:\FOX_prog"
-    # servSearch = ServiceRechercheFichier(pathDep, ['.py'], ['getNullouBlanc'])
+    servSearch = ServiceRechercheFichier(pathDep, ['.py'], ['createTable('])
 
     servSearch.search()
     print('ici')
