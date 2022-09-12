@@ -1,0 +1,3 @@
+
+
+C:\Logiciels\anaconda3\envs\compil\python -m PyInstaller transEssOneFile.spec

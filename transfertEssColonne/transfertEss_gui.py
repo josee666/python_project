@@ -13,7 +13,10 @@ from transfertEss import *
 
 class App_transfertEssence(Tk):
     # 2022-07
-    # auteur - JM
+    # auteur - J
+    # programme qui transfert le fichier plate ess-prc en ess-col.
+    # ex: et1_ess1  - et1_pc1                      ET1_SAB
+    #       SAB     -   0       va devenir          100
 
     def __init__(self):
 
@@ -21,7 +24,7 @@ class App_transfertEssence(Tk):
 
         self.geometry("700x220+600+250")
         self.title("Transfert essences ET_ESS_PRC en colonne ESS_SUP et ESS_INF")
-        self.version = 1
+        self.version = 1.1
 
 
         # Widget
