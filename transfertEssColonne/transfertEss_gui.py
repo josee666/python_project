@@ -15,7 +15,7 @@ class App_transfertEssence(Tk):
     # 2022-07
     # auteur - J
     # programme qui transfert le fichier plate ess-prc en ess-col.
-    # ex: et1_ess1  - et1_pc1                      ET1_SAB
+    # ex: ET1_ESS1  - ET1_PC1                      SAB_SUP
     #       SAB     -   0       va devenir          100
 
     def __init__(self):
