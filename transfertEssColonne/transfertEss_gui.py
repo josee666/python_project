@@ -23,8 +23,9 @@ class App_transfertEssence(Tk):
         Tk.__init__(self)
 
         self.geometry("700x220+600+250")
-        self.title("Transfert essences ET_ESS_PRC en colonne ESS_SUP et ESS_INF")
         self.version = 1.1
+
+        self.title("Transfert essences ET_ESS_PRC en colonne ESS_SUP et ESS_INF. Version: {}".format(self.version))
 
 
         # Widget
