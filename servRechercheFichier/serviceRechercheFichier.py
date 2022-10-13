@@ -178,13 +178,13 @@ class ServiceRechercheFichier():
 
 if __name__ == '__main__':
 
-    pathDep = "G:\OutilsProdDIF\modules_communs\python27"
+    # pathDep = "G:\OutilsProdDIF\modules_communs\python27"
     # pathDep = "D:\python\gitProjet\donneeTests\ServRecherche"
     # pathDep = "D:/Python\projetGit/donneeTest/recherche_py"
     # servSearch = ServiceRechercheFichier(pathDep, ['.py'], [ 'getNullouBlanc' ])
 
-    # pathDep = "D:\\"
+    pathDep = "D:\\"
     # pathDep = "D:\FOX_prog"
-    servSearch = ServiceRechercheFichier(dosDepart=pathDep, listExtensionFichier=['.py'], listExpressionATrouver=['createTable('], dosSortie='D:/a_temp' )
+    servSearch = ServiceRechercheFichier(dosDepart=pathDep, listExtensionFichier=['.py'], listExpressionATrouver=['from osgeo import'], dosSortie='D:/' )
     servSearch.search()
     print('ici')
