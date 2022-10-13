@@ -1,0 +1,12 @@
+
+
+conda activate ServRechercheFile
+
+
+conda env export > test3.yml
+* export env dans fichier, doit avoir active env avant
+
+
+conda env create -f=path/to/ymlFile/tes.yml
+
+
