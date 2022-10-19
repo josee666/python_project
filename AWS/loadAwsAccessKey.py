@@ -4,14 +4,14 @@
 
 
 
-def loadAccessKey(file):
+def loadAccessKey(fileAwsCsvAccessKey):
     ## JM 2022-10
     ## fonction qui ouvre un fichier .csv de cle de securité AWS
 
     ## return [accessKey, SecretAccesKey]
 
 
-    f = open(file, "r")
+    f = open(fileAwsCsvAccessKey, "r")
     print(f.readline())
     listFileRead = f.readline().rstrip('\n').split(',')
     # lines = f.read().splitlines()
