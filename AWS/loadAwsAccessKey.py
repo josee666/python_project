@@ -4,7 +4,7 @@
 
 
 
-def loadAccessKey(fileAwsCsvAccessKey):
+def loadAWSAccessKey(fileAwsCsvAccessKey):
     ## JM 2022-10
     ## fonction qui ouvre un fichier .csv de cle de securité AWS
 
@@ -26,7 +26,7 @@ def loadAccessKey(fileAwsCsvAccessKey):
 if __name__ == '__main__':
 
     file = "D:\\AWS\\accessKey\\josee666_accessKeys.csv"
-    listKey = loadAccessKey(file)
+    listKey = loadAWSAccessKey(file)
 
     print('access: ',listKey[0] )
     print('secret: ',listKey[1] )
