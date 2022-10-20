@@ -2,6 +2,7 @@
 import json, boto3 ,os, sys, uuid
 from urllib.parse import unquote_plus
 import requests
+from loadAwsAccessKey import *
 
 s3_client = boto3.client('s3')
 
@@ -13,7 +14,8 @@ def lambda_handler(event, context):
     some_text = "test"
     bucket_name = "josee-bucket3"
     callWfs = "https://pregeoegl.msp.gouv.qc.ca/ws/mffpecofor.fcgi?service=WFS&request=GetFeature&version=1.1.0&typename=nord_photo_oblique&srsname=EPSG:3857&maxFeatures=1000&propertyName=LATITUDE,LONGITUDE,NOM_PHOTO,geometry&bbox=-7937865.542621327,5960166.782724251,-7833376.124955491,6045546.943318793,EPSG:3857"
-    callPdf = "https://pregeoegl.msp.gouv.qc.ca/ws/mffpecofor.fcgi?_t=9514ce3a&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=application/x-pdf&TRANSPARENT=true&LAYERS=lidar_pentes&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi%3A96&CRS=EPSG%3A3857&STYLES=&WIDTH=787&HEIGHT=907&BBOX=-8002058.621487584%2C5967433.537821494%2C-8000178.748323195%2C5969600.049841952"
+    # callPdf = "https://pregeoegl.msp.gouv.qc.ca/ws/mffpecofor.fcgi?_t=9514ce3a&SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=application/x-pdf&TRANSPARENT=true&LAYERS=lidar_pentes&DPI=96&MAP_RESOLUTION=96&FORMAT_OPTIONS=dpi%3A96&CRS=EPSG%3A3857&STYLES=&WIDTH=787&HEIGHT=907&BBOX=-8002058.621487584%2C5967433.537821494%2C-8000178.748323195%2C5969600.049841952"
+    callPdf = "https://pregeoegl.msp.gouv.qc.ca/ws/mffpecofor.fcgi?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=application/pdf&LAYERS=lidar_pentes&CRS=EPSG%3A3857&WIDTH=787&HEIGHT=907&BBOX=-8002058.621487584%2C5967433.537821494%2C-8000178.748323195%2C5969600.049841952"
 
     # response = requests.get(callWfs)
     response = requests.get(callPdf)
@@ -25,12 +27,18 @@ def lambda_handler(event, context):
 
     if local:
         tmp_file = "D:\\python\\gitProjet\\python_project\\AWS\\output\\tmp\\" + file_name
+        try:
+            os.remove(tmp_file)
+        except:
+            pass
+
 
     import base64
     # data = response.json()["data"]
     with open(tmp_file, 'wb') as f:
-        f.write(base64.b64decode(content))
+        f.write(content)
 
+    # return
 
     # with open(tmp_file, "w") as file:
     #     file.write(content)
@@ -40,11 +48,14 @@ def lambda_handler(event, context):
 
     s3 = boto3.resource("s3")
     if local:
+        csvAWSKey = "D:\\AWS\\accessKey\\josee666_accessKeys.csv"
+        keys = loadAWSAccessKey(csvAWSKey)
         s3 = boto3.resource('s3',
-                       aws_access_key_id="AKIAVZJ7BGIRIDLYOIZB",
-                       aws_secret_access_key="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")
+                       aws_access_key_id=keys[0],
+                       aws_secret_access_key=keys[1])
 
     s3.meta.client.upload_file(tmp_file, bucket_name, file_name)
+    print('load to s3')
     ## s3.meta.client.upload_file(lambda_path, bucket_name, file_name)
 
     return {
