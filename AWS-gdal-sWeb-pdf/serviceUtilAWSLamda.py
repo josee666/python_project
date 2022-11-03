@@ -1,6 +1,6 @@
 
 
-import requests, os, boto3
+import requests, os, boto3, json
 
 class ErrorServiceAWSLambda(Exception):
     """ JM 2022-10
@@ -37,8 +37,12 @@ class ServiceUtilAWSLambda():
         self.local = local
         self.awsAccesKeyFile = awsAccesKeyCsvFile
 
+
         if local:
-            self.loadAWSAccessKey()
+
+            listAccesKey = self.loadAWSAccessKey()
+            self.accesKey = listAccesKey[0]
+            self.secretAccesKey = listAccesKey[1]
 
 
     def loadAWSAccessKey(self):
@@ -61,6 +65,63 @@ class ServiceUtilAWSLambda():
         #
         #     f.read(base64.b64decode(content))
         return listFileRead
+    #
+
+    def saveLocalFileInS3Bucket(self, localPathFileName, inRepTmp = False):
+        # /tmp/tes.xml   (in cloud
+        # pathFileName = "D:\\python\\gitProjet\\python_project\\AWS\\output\\tmp\\tes.xml
+
+        fileName = os.path.basename(localPathFileName)
+        # s3 = boto3.resource("s3")
+
+        # listKey = self.loadAWSAccessKey()
+        s3 = boto3.resource('s3',
+                            aws_access_key_id= self.accesKey,
+                            aws_secret_access_key= self.secretAccesKey)
+
+        s3.meta.client.upload_file(localPathFileName, self.bucketName, fileName)
+        ## s3.meta.client.upload_file(lambda_path, bucket_name, file_name)
+
+        return {
+            'statusCode': 200,
+            'body': json.dumps('file is created in: ' + self.bucketName)
+        }
+
+    def saveWmsCallToFileInS3(self, call, fileNameExt, type, repTmp = True):
+        # param
+
+        #       fileNameExt = outGeo.pdf
+        #       type = ext [geojson, xml, pdf, tif, ect]
+        #       pathLocal = path to Save file repertiorie on computer, if true the path must be
+        #          gaving in path
+        #
+
+        response = requests.get(call)
+        content = response.content
+        if type in ['json', 'geojson', 'xml']:
+            content = response.content.decode("utf-8")
+
+
+        fileToSave = fileNameExt
+
+        if repTmp:
+            fileToSave = "/tmp/" + fileNameExt
+
+        import base64
+        # data = response.json()["data"]
+        with open(fileToSave, 'wb') as f:
+            f.write(content)
+
+        s3 = boto3.resource("s3")
+
+        s3.meta.client.upload_file(fileToSave, self.bucketName, fileNameExt)
+
+        print('load to s3')
+        return {
+            'statusCode': 200,
+            'body': json.dumps('file is created in:' + fileToSave)
+        }
+
 
 
     def webServiceCall2paramDict(self, call):
@@ -77,10 +138,7 @@ class ServiceUtilAWSLambda():
 
         return dictParam
 
-        # bboxList = dictParam['BBOX'].split('%2C')
-        # ullr = self.BBOX2UllrString(dictParam['BBOX'])
 
-        # print('ici')
 
     def BBOX2UllrString(self, bboxString):
         # ullr = upper left, lower right
@@ -94,34 +152,6 @@ class ServiceUtilAWSLambda():
         return ullr
 
 
-    def webServiceCallToFileSaveInS3(self, call, outputFileNameWithExtension, type, pathLocal=False):
-        # param
-        #       type = ext [geojson, xml, pdf, tif, ect]
-        #       pathLocal = path to Save file repertiorie on computer 'C://temp/'
-        #
-
-        response = requests.get(call)
-        content = response.content
-        if type in ['json', 'geojson', 'xml']:
-            content = response.content.decode("utf-8")
-
-
-        fileToSave = "/tmp/" + outputFileNameWithExtension
-
-        if pathLocal:
-            tmp_file = pathLocal + fileToSave
-            try:
-                os.remove(tmp_file)
-            except:
-                pass
-
-        import base64
-        # data = response.json()["data"]
-        with open(fileToSave, 'wb') as f:
-            f.write(content)
-
-        s3.meta.client.upload_file(fileToSave, self.bucketName, outputFileNameWithExtension)
-        print('load to s3')
 
 
 if __name__ == '__main__':
@@ -135,8 +165,14 @@ if __name__ == '__main__':
 
     callWfs_penteLidar = "https://pregeoegl.msp.gouv.qc.ca/ws/mffpecofor.fcgi?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=application/pdf&LAYERS=lidar_pentes&CRS=EPSG%3A3857&WIDTH=787&HEIGHT=907&BBOX=-8002058.621487584%2C5967433.537821494%2C-8000178.748323195%2C5969600.049841952"
 
-    paramDict = servAws.webServiceCall2paramDict(callWfs_penteLidar)
-    ullr = servAws.BBOX2UllrString(paramDict["BBOX"])
+    # paramDict = servAws.webServiceCall2paramDict(callWfs_penteLidar)
+    # ullr = servAws.BBOX2UllrString(paramDict["BBOX"])
+
+    # file2Save = "D:\\python\\gitProjet\\donneeTests\\AWS\\new\\outCallServ.pdf"
+    file2Save = "outCallServ.pdf"
+    # servAws.wmsCallToFileInS3(call=callWfs_penteLidar, outputFileNameWithExtension=file2Save, type='pdf', pathLocal=True)
+    servAws.wmsCallToFileInS3(call=callWfs_penteLidar, outputFileNameWithExtension=file2Save, type='pdf', pathLocal=False)
+
 
 
     print('ici')

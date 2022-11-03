@@ -35,8 +35,8 @@ def lambda_handler(event, context):
     s3 = boto3.resource("s3")
     if local:
         s3 = boto3.resource('s3',
-                       aws_access_key_id="AKIAVZJ7BGIRIDLYOIZB",
-                       aws_secret_access_key="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")
+                       aws_access_key_id="putKeyHere",
+                       aws_secret_access_key="putSecretKey")
 
     s3.meta.client.upload_file(tmp_file, bucket_name, file_name)
     ## s3.meta.client.upload_file(lambda_path, bucket_name, file_name)
