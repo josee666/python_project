@@ -1,0 +1,31 @@
+
+
+** package **
+
+
+pour integre un package custom. On le zip et dans la function on fait upload from zip file
+
+ensuite dans lambda_function attention au niveau
+
+from serviceUtilAWSLamda import *
+
+
+******pack python standard ****
+ex package request
+
+sur poste locale on package request et ces dependances
+
+mkdir lambda_layers
+cd lambda_layers
+mkdir python
+cd python
+pip install requests -t ./
+cd ..
+** windows marche pas... zip -r python_modules.zip .     *** ici tout doit etre zippé -> -r zip recursively toute
+7z a -tzip -r python_modules.zip    *** voir ici https://stackoverflow.com/questions/18180060/how-to-zip-a-file-using-cmd-line
+
+
+* Dans lambda layer add new layer -> python_module_request upload le .zip dedans
+* dans la function - add le layer python_module_request
+
+
